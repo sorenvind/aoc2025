@@ -66,7 +66,7 @@ def main(argv: List[str] | None = None) -> None:
 	final, hits = process_moves(moves, start=50)
 	print(f"Final counter: {final}")
 	# Print how many times the counter hit 0 as the final output
-	print(hits)
+	print(f"Hits of 0: {hits})
 
 
 def parse_moves(lines: List[str]) -> List[tuple]:
