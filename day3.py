@@ -19,30 +19,39 @@ import sys
 from typing import List
 
 
-def process_bank(bank: str) -> str:
-    """Given a digit string `bank`, return the two-digit result as described.
+def process_bank(bank: str, k: int = 12) -> str:
+    """Given a digit string `bank`, select `k` digits greedily and return them as a string.
 
-    The first digit is the maximum digit found from index 0 up to index len(bank)-2
-    (inclusive). The second digit is the maximum digit found strictly after that
-    first-digit position (i.e., from first_pos+1 to end).
+    Selection rule (greedy): for i in 0..k-1 choose the left-most occurrence of the
+    maximum digit in the window bank[start : n - (k - i) + 1], where start is the
+    position after the previously chosen digit (initially 0). This ensures there is
+    room to pick the remaining digits.
 
-    Returns a two-character string containing the two digits.
+    Returns a string of length `k` containing the selected digits.
     """
-    if len(bank) < 2:
-        raise ValueError("bank string must have at least 2 digits")
+    n = len(bank)
+    if k <= 0:
+        raise ValueError("k must be positive")
+    if n < k:
+        raise ValueError(f"bank string must have at least {k} digits")
 
-    # find max digit and its first occurrence in prefix (0..len-2)
-    prefix = bank[: len(bank) - 1]
-    max_prefix = max(prefix)
-    first_pos = prefix.index(max_prefix)
+    result_chars: List[str] = []
+    start = 0
+    for i in range(k):
+        # window end (exclusive) to leave room for remaining selections
+        end_exclusive = n - (k - i) + 1
+        window = bank[start:end_exclusive]
+        if not window:
+            raise ValueError("unable to find next digit; window empty")
+        # find the maximum digit and its left-most index in the window
+        max_digit = max(window)
+        rel_idx = window.index(max_digit)
+        abs_idx = start + rel_idx
+        result_chars.append(max_digit)
+        # next search starts after the chosen position
+        start = abs_idx + 1
 
-    # suffix is everything after first_pos
-    suffix = bank[first_pos + 1 :]
-    if not suffix:
-        raise ValueError("no suffix after chosen prefix position")
-    max_suffix = max(suffix)
-
-    return f"{max_prefix}{max_suffix}"
+    return "".join(result_chars)
 
 
 def main(argv: List[str] | None = None) -> None:
@@ -56,7 +65,7 @@ def main(argv: List[str] | None = None) -> None:
     lines = [l.strip() for l in p.read_text(encoding="utf-8").splitlines() if l.strip()]
     results = []
     for l in lines:
-        res = process_bank(l)
+        res = process_bank(l, k=12)
         print(res)
         results.append(res)
 
