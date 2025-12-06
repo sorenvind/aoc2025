@@ -63,10 +63,24 @@ def compute_invalid_ids(rng: Tuple[int, int]) -> List[int]:
             invalid.append(n)
             continue
 
-        # repeated pattern: only consider even-length strings
-        if len(s) % 2 == 0:
-            half = len(s) // 2
-            if s[:half] == s[half:]:
+        # repeated pattern: consider any even-sized split where the
+        # string is composed of k repeats of a smaller block (k >= 2)
+        L = len(s)
+        if L >= 2 and L % 1 == 0:
+            # Check all possible block sizes that divide the length and make
+            # at least two repeats (block_size from 1..L//2)
+            found_repeat = False
+            for block in range(1, L // 2 + 1):
+                if L % block != 0:
+                    continue
+                repeats = L // block
+                if repeats < 2:
+                    continue
+                part = s[0:block]
+                if part * repeats == s:
+                    found_repeat = True
+                    break
+            if found_repeat:
                 invalid.append(n)
                 continue
 
