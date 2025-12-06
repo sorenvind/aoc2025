@@ -1,0 +1,16 @@
+new problem, sample input:
+"3-5
+10-14
+16-20
+12-18
+
+1
+5
+8
+11
+17
+32"
+
+note: the input consist of two sections separated by a blank line. the first part is id ranges (with both first and second id inclusive), the second part is id's to search for in the ranges.
+
+task: read and store the input in two parts, ranges and searches. compress the ranges by removing overlapping ones and merging ranges which are neighboring (e.g. range 1-2 and 3-4 == range 1-4, range 2-3 and 1-5 == range 1-5). for each id in the search list, it is "fresh" if it is included in any of the compressed ranges and otherwise "spoiled". return each "fresh" id and count how many ids are "fresh". The expected output for the sample is 3. 
