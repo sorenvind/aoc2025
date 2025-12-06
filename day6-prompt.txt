@@ -1,0 +1,16 @@
+# p1
+
+new problem, sample input:
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  
+
+task: 
+first: read the last line of the input file, and determine the number of symbols which are non-whitespace characters, call that N. each symbol determines a math operation. we need to prepare N partial results initialised at 0. the operation relevant for the first partial result in the example is *, the one for the second partial result is +
+
+second: read each line of the file except for the last one. for each line, read N numbers separated by whitespace. for each number in position i on the line it needs to be applied to the partial result on index i using the math operation on index i.
+
+third: output each of the N partial results, and the final result which is the sum of all the partial results. 
+
+the sample has partial results: 33210, 490, 4243455, 401 and final result 4277556
