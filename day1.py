@@ -12,6 +12,7 @@ If no file is given the script uses `input.txt` in the current directory.
 
 from __future__ import annotations
 
+from math import floor
 from pathlib import Path
 import sys
 import re
@@ -63,10 +64,16 @@ def main(argv: List[str] | None = None) -> None:
 	print(f"Parsed {len(moves)} moves; sample: {moves[:10]}")
 
 	# Apply moves to a counter starting at 50 (R = add, L = subtract)
-	final, hits = process_moves(moves, start=50)
+	final, hits, exceedances, signs = process_moves(moves, start=50)
 	print(f"Final counter: {final}")
 	# Print how many times the counter hit 0 as the final output
-	print(f"Hits of 0: {hits})
+	print(f"Hits of 0: {hits}")
+	# Print how many times abs(counter) exceeded 100 before modulo
+	print(f"Exceedances >100: {exceedances}")
+	# Print signs
+	print(f"Sign changes: {signs}")
+    # Print total of hits and exceedances
+	print(f"Total hits + exceedances + signs: {hits + exceedances + signs}")
 
 
 def parse_moves(lines: List[str]) -> List[tuple]:
@@ -104,21 +111,34 @@ def process_moves(moves: List[tuple], *, start: int = 50, verbose: bool = True) 
 	"""
 	counter = start
 	hits = 0
+	exceedances = 0
+	signs = 0
 	for idx, (direction, value, raw) in enumerate(moves, start=1):
 		if direction == "R":
-			counter += value
+			new_counter = counter + value
 		elif direction == "L":
-			counter -= value
+			new_counter = counter - value
 		else:
 			raise ValueError(f"Unknown direction {direction!r} in move {idx}: {raw!r}")
+
+		if counter > 0 and new_counter < 0:
+			signs += 1
+
+		counter = new_counter
+
+		# Count if the absolute value exceeded 100 before applying modulo
+		if abs(counter) > 100:
+			exceeds = floor((abs(counter)-1) / 100)  # subtract 1 to avoid double counting at exact multiples of 100
+			print(f"exceedance detected, value {exceeds}")
+			exceedances += exceeds
 		# After each update, keep the counter within 0..99 using modulo 100
 		counter %= 100
-		if verbose:
-			print(f"Move {idx}: {direction}{value} -> counter={counter}")
 		if counter == 0:
 			print("hit 0")
 			hits += 1
-	return counter, hits
+		if verbose:
+			print(f"Move {idx}: {direction}{value} -> counter={counter}, hits={hits}, exceedances={exceedances}, signs={signs}")
+	return counter, hits, exceedances, signs
 
 
 if __name__ == "__main__":
