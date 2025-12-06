@@ -44,24 +44,33 @@ def main(argv: List[str] | None = None) -> None:
     rows = len(paper_map)
     cols = len(paper_map[0]) if rows else 0
 
-    may_access_coords: List[Tuple[int, int]] = []
+    total_may_access = 0
 
-    for r in range(rows):
-        for c in range(cols):
-            if paper_map[r][c] != "@":
-                continue
-            # count adjacent '@' excluding the cell itself
-            count = 0
-            for rr, cc in neighbors(r, c, rows, cols):
-                if rr == r and cc == c:
+    while True:
+        may_access_coords: List[Tuple[int, int]] = []
+        for r in range(rows):
+            for c in range(cols):
+                if paper_map[r][c] != "@":
                     continue
-                if paper_map[rr][cc] == "@":
-                    count += 1
-            if count <= 3:
-                may_access_coords.append((r, c))
-                print((r, c))
+                # count adjacent '@' excluding the cell itself
+                count = 0
+                for rr, cc in neighbors(r, c, rows, cols):
+                    if rr == r and cc == c:
+                        continue
+                    if paper_map[rr][cc] == "@":
+                        count += 1
+                if count <= 3:
+                    may_access_coords.append((r, c))
+        if not may_access_coords:
+            break
+        # print and remove these cells, then repeat
+        for coord in may_access_coords:
+            print(coord)
+            r, c = coord
+            paper_map[r][c] = "."
+        total_may_access += len(may_access_coords)
 
-    print(len(may_access_coords))
+    print(total_may_access)
 
 
 if __name__ == "__main__":
