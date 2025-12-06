@@ -1,0 +1,18 @@
+new problem, sample input is:
+..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
+
+task: read the sample input from the file into a 2d grid array representation which we call paper_map. we need to compute each cell in paper_map, and determine if may_access is true for the cell at the it's coordinate (row, column) if:
+- the symbol in the cell is @ (not .), AND
+- there are <= 3 adjacent cells with symbol @. A cell is adjacent if its coordinate differs by at most 1 (either cell or row) from the cell being computed.
+we need to print the coordinates of cells with may_access and count how many times it is true over the whole grid.
+
+example output is 13
