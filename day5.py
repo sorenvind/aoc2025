@@ -66,16 +66,13 @@ def main(argv: List[str] | None = None) -> None:
     searches = [int(l.strip()) for l in search_lines if l.strip()]
 
     compressed = compress_ranges(ranges)
-    print(f"Compressed ranges: {compressed}")
+    # print each compressed range on its own line
+    for s, e in compressed:
+        print(f"{s}-{e}")
 
-    fresh_count = 0
-    for sid in searches:
-        # check if sid is inside any compressed range
-        found = any(s <= sid <= e for s,e in compressed)
-        if found:
-            print(sid)
-            fresh_count += 1
-    print(fresh_count)
+    # final output: total length across all compressed ranges (inclusive)
+    total_length = sum(e - s + 1 for s, e in compressed)
+    print(total_length)
 
 if __name__ == "__main__":
     main()
